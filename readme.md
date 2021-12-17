@@ -129,8 +129,6 @@ We will detail it in future updates
 |       Kafka Connect       	|   2   	|                    Installation Only                   	|           2 GB Heap Size           	| 2~4 	|
 |    Confluent Rest Proxy   	|   2   	|                    Installation Only                   	| Producer = 512 MB Consumer = 16 MB 	|  16 	|
 |      Confluent KSQLDB     	|   2   	|                      128 GB [SSD]                      	|                10 GB               	|  2  	|
-|    Database postgreSQL    	|   1   	|                                                        	|                                    	|  2  	|
-|      Database mongoDB     	|   1   	|                                                        	|                                    	|  2  	|
 |        Apache Pinot       	|   3   	|                                                        	|                                    	| 2~4 	|
 |           Minio           	|   2   	|                                                        	|                                    	|  2  	|
 |           Lenses           	|   2   	|                                                        	|                                    	|  2  	|

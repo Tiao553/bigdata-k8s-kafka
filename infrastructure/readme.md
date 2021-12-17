@@ -30,8 +30,7 @@ doctl kubernetes cluster kubeconfig save []
 ```
 
 ```shell
-# access iac terraform script
-/Users/luanmorenomaciel/BitBucket/big-data-on-k8s/iac/do/do-nyc1-do-owshq-dev/
+# access iac terraform script/
 
 # init terraform script process
 # prepare working directory
@@ -49,6 +48,9 @@ terraform apply -auto-approve
 # kubernetes aks engine
 doctl kubernetes cluster list
 doctl kubernetes cluster node-pool list []
+
+# Need register cluster on kubeconfig local
+doctl kubernetes cluster kubeconfig save [id_clustes]
 
 # change [variables.tf]
 terraform plan

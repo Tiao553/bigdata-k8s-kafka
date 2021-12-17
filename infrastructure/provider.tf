@@ -7,14 +7,8 @@ terraform {
   }
 }
 
-variable "do_token" {default = "token"}
-variable "pvt_key" {default = "private-key"}
+variable "do_token" {default = "ae3e380048ead11c08410bd90d647b4fda98648512fd30ce2400d1ae3d85db08"}
 
 provider "digitalocean" {
   token = var.do_token
-}
-
-data "digitalocean_ssh_key" "terraform" {
-  # ls ~/.ssh/*.pub
-  name = "public-ssh-key"
 }
