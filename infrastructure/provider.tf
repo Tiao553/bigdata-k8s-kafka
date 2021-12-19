@@ -7,7 +7,7 @@ terraform {
   }
 }
 
-variable "do_token" {default = "ae3e380048ead11c08410bd90d647b4fda98648512fd30ce2400d1ae3d85db08"}
+variable "do_token" {default = "ADD Your TOKEN"}
 
 provider "digitalocean" {
   token = var.do_token

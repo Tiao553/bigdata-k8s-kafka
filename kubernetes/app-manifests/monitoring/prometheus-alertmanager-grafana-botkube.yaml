@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  # app name
+  name: prometheus-alertmanager-grafana
+  # deployed yaml
+  namespace: cicd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/Tiao553/bigdata-k8s-kafka'
+    path: kubernetes/helm-charts/prometheus-alertmanager-grafana
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - values-development.yaml
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

@@ -1,0 +1,22 @@
+apiVersion: "kafka.strimzi.io/v1beta2"
+kind: "KafkaConnector"
+metadata:
+  # connector name
+  name: "ingest-src-mongodb-google-auth-avro-2312ea26"
+  labels:
+    # kafka connect [cluster] name
+    strimzi.io/cluster: edh
+spec:
+  class: com.mongodb.kafka.connect.MongoSourceConnector
+  tasksMax: 1
+  config:
+    key.converter: "io.confluent.connect.avro.AvroConverter"
+    key.converter.schema.registry.url: "http://schema-registry-cp-schema-registry:8081"
+    value.converter: "io.confluent.connect.avro.AvroConverter"
+    value.converter.schema.registry.url: "http://schema-registry-cp-schema-registry:8081"
+    connection.uri: "mongodb+srv://doadmin:Y163zo84ge7WH90c@mongo-cluster-3569c0d1.mongo.ondigitalocean.com/dhauz_test?authSource=admin&replicaSet=mongo-cluster&tls=true&tlsCAFile=/home/sebastiao/projects/luan/chalanger_kafka/scripts/create_docs_mongo/ca-certificate.crt"
+    topic.prefix: "src.mongodb"
+    database: "dhauz_test"
+    collection: "google-auth"
+    copy.existing: true
+    publish.full.document.only: true

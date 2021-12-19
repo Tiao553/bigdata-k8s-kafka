@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
     parser.add_argument('--interval', type=int, default=0.005,
                         help='interval of generating fake data in seconds')
-    parser.add_argument('-n', type=int, default=1,
+    parser.add_argument('-n', type=int, default=30,
                         help='sample size')
     parser.add_argument('--connection-string', '-cs', dest="connection_string", 
                         type=str, default=f'{url_conection}',
