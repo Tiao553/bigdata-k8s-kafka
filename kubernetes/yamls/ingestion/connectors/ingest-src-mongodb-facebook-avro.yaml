@@ -14,7 +14,7 @@ spec:
     key.converter.schema.registry.url: "http://schema-registry-cp-schema-registry:8081"
     value.converter: "io.confluent.connect.avro.AvroConverter"
     value.converter.schema.registry.url: "http://schema-registry-cp-schema-registry:8081"
-    connection.uri: "mongodb+srv://doadmin:Y163zo84ge7WH90c@mongo-cluster-3569c0d1.mongo.ondigitalocean.com/dhauz_test?authSource=admin&replicaSet=mongo-cluster&tls=true&tlsCAFile=/home/sebastiao/projects/luan/chalanger_kafka/scripts/create_docs_mongo/ca-certificate.crt"
+    connection.uri: "mongodb+srv://doadmin:8s3K5l0726OvtgL4@cluster-mongodb-5f6d7aa7.mongo.ondigitalocean.com/admin?authSource=admin&replicaSet=cluster-mongodb&tls=true&tlsCAFile=/home/sebastiao/projects/luan/chalanger_kafka/scripts/create_docs_mongo/ca-certificate.crt"
     topic.prefix: "src.mongodb"
     database: "dhauz_test"
     collection: "facebook"
