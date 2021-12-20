@@ -65,11 +65,10 @@ helm install argocd argo/argo-cd --namespace cicd --version 3.26.8
 k patch svc argocd-server -n cicd -p '{"spec": {"type": "LoadBalancer"}}'
 
 # retrieve load balancer ip
-# load balancer = 20.69.223.133
+# load balancer = "159.203.145.92"
 kubens cicd && kubectl get services -l app.kubernetes.io/name=argocd-server,app.kubernetes.io/instance=argocd -o jsonpath="{.items[0].status.loadBalancer.ingress[0].ip}"
 
 # get password to log into argocd portal
-# argocd login 20.69.223.133 --username admin --password PafATjllzVYkv6tC --insecure
 ARGOCD_LB="159.203.145.92"
 kubens cicd && k get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d | xargs -t -I {} argocd login $ARGOCD_LB --username admin --password {} --insecure
 
@@ -87,56 +86,64 @@ argocd repo add $REPOSITORY --username [NAME] --password [PWD] --port-forward
 
 # In this point all updates on your repository apply your yaml map to argoCD. If prefer you can individual apply yaml, how show below:
 
-# ingestion
+# Ingestion
+```
 k apply -f kubernetes/app-manifests/ingestion/kafka-broker.yaml
 k apply -f kubernetes/app-manifests/ingestion/schema-registry.yaml
 k apply -f kubernetes/app-manifests/ingestion/kafka-connect.yaml
 k apply -f kubernetes/app-manifests/ingestion/cruise-control.yaml
 k apply -f kubernetes/app-manifests/ingestion/kafka-connectors.yaml
-
-# deep storage
-```
-k apply -f repository/app-manifests/deepstorage/minio-operator.yaml
 ```
 
-# datastore
+# Deep storage
 ```
-k apply -f repository/app-manifests/datastore/pinot.yaml
-```
-
-# processing
-```
-k apply -f repository/app-manifests/processing/ksqldb.yaml
+k apply -f kubernetes/app-manifests/deepstorage/minio-operator.yaml
 ```
 
-# data ops
+## to get your password access type on prompt
+
 ```
-k apply -f repository/app-manifests/lenses/lenses.yaml
+k get secret $(k get serviceaccount console-sa --namespace deepstorage -o jsonpath="{.secrets[0].name}") --namespace deepstorage -o jsonpath="{.data.token}" | base64 --decode
 ```
 
-# monitoring
+# Datastore
 ```
-k apply -f repository/app-manifests/monitoring/prometheus-alertmanager-grafana-botkube.yaml
-```
-
-# logging
-```
-k apply -f repository/app-manifests/logging/elasticsearch.yaml
-k apply -f repository/app-manifests/logging/filebeat.yaml
-k apply -f repository/app-manifests/logging/kibana.yaml
+k apply -f kubernetes/app-manifests/datastore/pinot.yaml
 ```
 
-# cost
+# Processing
 ```
-k apply -f repository/app-manifests/cost/kubecost.yaml
-```
-
-# load balancer
-```
-k apply -f repository/app-manifests/misc/load-balancers-svc.yaml
+k apply -f kubernetes/app-manifests/processing/ksqldb.yaml
 ```
 
-# deployed apps
+# Data ops
+```
+k apply -f kubernetes/app-manifests/lenses/lenses.yaml
+```
+
+# Monitoring
+```
+k apply -f kubernetes/app-manifests/monitoring/prometheus-alertmanager-grafana-botkube.yaml
+```
+
+# Logging
+```
+k apply -f kubernetes/app-manifests/logging/elasticsearch.yaml
+k apply -f kubernetes/app-manifests/logging/filebeat.yaml
+k apply -f kubernetes/app-manifests/logging/kibana.yaml
+```
+
+# Cost
+```
+k apply -f kubernetes/app-manifests/cost/kubecost.yaml
+```
+
+# Load balancer
+```
+k apply -f kubernetes/app-manifests/misc/load-balancers-svc.yaml
+```
+
+# Deployed apps
 ```
 k get applications -n cicd
 ```
