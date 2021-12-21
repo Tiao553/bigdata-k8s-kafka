@@ -69,7 +69,7 @@ k patch svc argocd-server -n cicd -p '{"spec": {"type": "LoadBalancer"}}'
 kubens cicd && kubectl get services -l app.kubernetes.io/name=argocd-server,app.kubernetes.io/instance=argocd -o jsonpath="{.items[0].status.loadBalancer.ingress[0].ip}"
 
 # get password to log into argocd portal
-ARGOCD_LB="159.203.145.92"
+ARGOCD_LB="174.138.119.128"
 kubens cicd && k get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d | xargs -t -I {} argocd login $ARGOCD_LB --username admin --password {} --insecure
 
 # create cluster role binding for admin user [sa]
@@ -83,16 +83,22 @@ argocd cluster add $CLUSTER --in-cluster
 REPOSITORY="https://github.com/Tiao553/bigdata-k8s-kafka.git"
 argocd repo add $REPOSITORY --username [NAME] --password [PWD] --port-forward
 ```
+> In this point all updates on your repository apply your yaml map to argoCD. If prefer you can individual apply yaml, how show below: (obs: You need execute only time this commands, after update repo to argoCD apply YAMLs)
 
-# In this point all updates on your repository apply your yaml map to argoCD. If prefer you can individual apply yaml, how show below:
+
+# Load balancer
+
+```sh
+k apply -f kubernetes/app-manifests/misc/load-balancers-svc.yaml
+```
 
 # Ingestion
 ```
-k apply -f kubernetes/app-manifests/ingestion/kafka-broker.yaml -n ingestion
-k apply -f kubernetes/app-manifests/ingestion/schema-registry.yaml -n ingestion
-k apply -f kubernetes/app-manifests/ingestion/kafka-connect.yaml -n ingestion
-k apply -f kubernetes/app-manifests/ingestion/cruise-control.yaml -n ingestion
-k apply -f kubernetes/app-manifests/ingestion/kafka-connectors.yaml -n ingestion
+k apply -f kubernetes/app-manifests/ingestion/kafka-broker.yaml 
+k apply -f kubernetes/app-manifests/ingestion/schema-registry.yaml 
+k apply -f kubernetes/app-manifests/ingestion/kafka-connect.yaml 
+k apply -f kubernetes/app-manifests/ingestion/cruise-control.yaml 
+k apply -f kubernetes/app-manifests/ingestion/kafka-connectors.yaml 
 ```
 
 ## To consume data into kafka connect source topics
@@ -120,15 +126,44 @@ kafka-avro-console-consumer \
 # Processing
 
 ```sh
-k apply -f kubernetes/app-manifests/processing/ksqldb.yaml -n processing
+k apply -f kubernetes/app-manifests/processing/ksqldb.yaml
 ```
 
-##
+## Acess to ksqlDB
+```sh
+# access ksqldb server
+KSQLDB=ksqldb-server-5dbf5c69bb-j7dkv
+k exec $KSQLDB -n processing -i -t -- bash ksql
+
+# set latest offset read
+SET 'auto.offset.reset' = 'earliest';
+SET 'auto.offset.reset' = 'latest';
+
+# show info
+SHOW TOPICS;
+SHOW STREAMS;
+SHOW TABLES;
+SHOW QUERIES;
+```
+
+## Task definition in ksqlDB
+
+ 1. In our application we are going to create an event stream for the events that come from the mongo db and therefore we are going to put it into a table to be picked up by minio and pinot.
+
+ 2. For the postgres database we will already create a table where we will perform the treatment and make the data available in a table.
 
 # Deep storage
 
 ```sh
-k apply -f kubernetes/app-manifests/deepstorage/minio-operator.yaml -n deepstorage
+k apply -f kubernetes/app-manifests/deepstorage/minio-operator.yaml
+```
+
+To make use of minio you need to expose a gateway to the cluster, the so-called port-forward.  To do this, we either use a tool to manage this or we create another prompt because the access runs until the prompt is interrupted and to generate the access we use the following code:
+
+[documentation](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/)
+
+```sh
+kubectl port-forward service/console-minio 8087:9090
 ```
 
 ## to get your password access type on prompt
@@ -137,10 +172,11 @@ k apply -f kubernetes/app-manifests/deepstorage/minio-operator.yaml -n deepstora
 k get secret $(k get serviceaccount console-sa --namespace deepstorage -o jsonpath="{.secrets[0].name}") --namespace deepstorage -o jsonpath="{.data.token}" | base64 --decode
 ```
 
+
 # Datastore
 
 ```sh
-k apply -f kubernetes/app-manifests/datastore/pinot.yaml -n datastore
+k apply -f kubernetes/app-manifests/datastore/pinot.yaml
 ```
 
 # Data ops
@@ -169,14 +205,18 @@ k apply -f kubernetes/app-manifests/logging/kibana.yaml
 k apply -f kubernetes/app-manifests/cost/kubecost.yaml
 ```
 
-# Load balancer
-
-```sh
-k apply -f kubernetes/app-manifests/misc/load-balancers-svc.yaml
-```
-
 # Deployed apps
 
 ```sh
 k get applications -n cicd
+```
+
+## To delete all application with command line
+```sh
+k delete application.argoproj.io --all
+```
+
+## or only appication
+```sh
+k delete application.argoproj.io/kubecost
 ```
