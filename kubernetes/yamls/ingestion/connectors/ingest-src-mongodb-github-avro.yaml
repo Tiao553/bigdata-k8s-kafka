@@ -16,7 +16,7 @@ spec:
     value.converter.schema.registry.url: "http://schema-registry-cp-schema-registry:8081"
     connection.uri: "mongodb+srv://doadmin:8s3K5l0726OvtgL4@cluster-mongodb-5f6d7aa7.mongo.ondigitalocean.com/admin?authSource=admin&replicaSet=cluster-mongodb&tls=true&tlsCAFile=/home/sebastiao/projects/luan/chalanger_kafka/scripts/create_docs_mongo/ca-certificate.crt"
     topic.prefix: "src.mongodb"
-    database: "dhauz_test"
+    database: "admin"
     collection: "github"
     copy.existing: true
     publish.full.document.only: true
