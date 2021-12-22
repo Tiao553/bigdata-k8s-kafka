@@ -2,7 +2,7 @@ https://docs.digitalocean.com/reference/doctl/how-to/install/
 https://docs.digitalocean.com/reference/
 https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs
 
-```shell
+```sh
 # digital ocean
 
 # install doctl
@@ -27,6 +27,10 @@ doctl kubernetes cluster node-pool list []
 
 # get cluster context
 doctl kubernetes cluster kubeconfig save []
+
+# remove cluster on kubeconfig
+kubectl config delete-cluster [cluster]
+kubectl config delete-context [cluster] 
 ```
 
 ```shell

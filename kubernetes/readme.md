@@ -69,14 +69,14 @@ k patch svc argocd-server -n cicd -p '{"spec": {"type": "LoadBalancer"}}'
 kubens cicd && kubectl get services -l app.kubernetes.io/name=argocd-server,app.kubernetes.io/instance=argocd -o jsonpath="{.items[0].status.loadBalancer.ingress[0].ip}"
 
 # get password to log into argocd portal
-ARGOCD_LB="174.138.119.128"
+ARGOCD_LB="138.197.60.161"
 kubens cicd && k get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d | xargs -t -I {} argocd login $ARGOCD_LB --username admin --password {} --insecure
 
 # create cluster role binding for admin user [sa]
 k create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=system:serviceaccount:cicd:argocd-application-controller -n cicd
 
 # register cluster
-CLUSTER="do-nyc3-k8s-kafka-challenge-test"
+CLUSTER="do-nyc3-poc-kafka-k8s"
 argocd cluster add $CLUSTER --in-cluster
 
 # add repo into argo-cd repositories

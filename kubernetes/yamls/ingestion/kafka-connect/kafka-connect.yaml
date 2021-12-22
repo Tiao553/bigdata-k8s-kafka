@@ -42,8 +42,6 @@ spec:
     config.storage.replication.factor: -1
     offset.storage.replication.factor: -1
     status.storage.replication.factor: -1
-    Enable.Idempotence: true
-    Max.In.Flight.Requests.per.Connection: 1
 
     # file config provider
     #config.providers: file
